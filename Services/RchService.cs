@@ -11,7 +11,7 @@ namespace Services
             //throw new FunctionalException("LT-101", "obligor not found");
             return Task.FromResult(new RchData
             {
-                AssetClass = obligor == "123" ? "CORP" : "PI"
+                AssetClass = obligor == "1234" ? "CORP" : "PI"
             });
         }
     }

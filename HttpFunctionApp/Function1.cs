@@ -27,8 +27,8 @@ namespace HttpFunctionApp
                 var obligor = "123";
                 var assessment = new Assessment(obligor);
 
-                assessment = await ExecutePhase(() => GetRchData(assessment));
-                assessment = await ExecutePhase(() => CalculateRatio(assessment));
+                assessment = await ExecutePhase(assessment, () => GetRchData(assessment));
+                assessment = await ExecutePhase(assessment, () => CalculateRatio(assessment));
 
                 if (!assessment.Disqualified)
                 {
@@ -57,8 +57,14 @@ namespace HttpFunctionApp
             }
         }
 
-        private async Task<Assessment> ExecutePhase(Func<Task<Assessment>> deleg)
+        private async Task<Assessment> ExecutePhase(Assessment assesment, Func<Task<Assessment>> deleg)
         {
+            // would be nicer to not call this function when already disqualified
+            if (assesment.Disqualified)
+            {
+                return assesment;
+            }
+
             var assessment = await deleg();
 
             if (assessment.Disqualified)
